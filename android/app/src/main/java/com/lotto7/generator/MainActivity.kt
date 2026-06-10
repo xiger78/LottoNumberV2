@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.lotto7.generator.i18n.AppLanguage
 import com.lotto7.generator.i18n.ProvideStrings
 import com.lotto7.generator.i18n.S
 import com.lotto7.generator.ui.components.LottoBanner
@@ -51,6 +52,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent.getStringExtra(EXTRA_SET_LANG)?.let { code ->
+            viewModel.setLanguage(AppLanguage.fromCode(code))
+        }
         setContent {
             val language by viewModel.language.collectAsState()
             Lotto7GeneratorTheme {
@@ -59,6 +63,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val EXTRA_SET_LANG = "set_lang"
     }
 }
 
