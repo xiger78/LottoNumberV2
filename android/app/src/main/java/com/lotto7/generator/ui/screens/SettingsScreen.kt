@@ -5,28 +5,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.lotto7.generator.SettingsUiState
 import com.lotto7.generator.i18n.AppLanguage
@@ -54,6 +57,34 @@ fun SettingsScreen(
     ) {
         Text(text = s.settingsTitle, style = MaterialTheme.typography.titleMedium)
 
+        if (uiState.isImporting) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+
+        uiState.importMessage?.let { msg ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (uiState.importError) {
+                        MaterialTheme.colorScheme.errorContainer
+                    } else {
+                        MaterialTheme.colorScheme.primaryContainer
+                    }
+                )
+            ) {
+                Text(
+                    text = msg,
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (uiState.importError) {
+                        MaterialTheme.colorScheme.onErrorContainer
+                    } else {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    }
+                )
+            }
+        }
+
         Text(
             text = s.languageLabel,
             style = MaterialTheme.typography.titleSmall,
@@ -76,7 +107,7 @@ fun SettingsScreen(
         Text(
             text = s.autoRegisterExcel,
             style = MaterialTheme.typography.titleSmall,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold
         )
         Text(
             text = s.autoRegisterExcelDesc,
@@ -102,7 +133,7 @@ fun SettingsScreen(
         Text(
             text = s.fetchOfficial,
             style = MaterialTheme.typography.titleSmall,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold
         )
         Text(
             text = s.fetchOfficialDesc,
@@ -119,18 +150,6 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(s.fetchOfficial)
             }
-        }
-
-        uiState.importMessage?.let { msg ->
-            Text(
-                text = msg,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (uiState.importError) {
-                    MaterialTheme.colorScheme.error
-                } else {
-                    MaterialTheme.colorScheme.primary
-                }
-            )
         }
     }
 }

@@ -314,12 +314,39 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun autoRegisterFromExcel() {
-        if (!::draws.isInitialized) return
         viewModelScope.launch {
-            _settingsState.update { it.copy(isImporting = true, importMessage = null, importError = false) }
+            val lang = language.value
+            val s = LocalizedStrings.get(lang)
+            if (!::draws.isInitialized) {
+                _settingsState.update {
+                    it.copy(importMessage = s.dataNotReady, importError = true)
+                }
+                return@launch
+            }
+            _settingsState.update {
+                it.copy(isImporting = true, importMessage = s.importingEmbedded, importError = false)
+            }
             try {
-                val result = withContext(Dispatchers.IO) { repo.importAutoRegister(draws) }
-                showImportResult(result)
+                val embedded = withContext(Dispatchers.IO) { repo.importFromDraws(draws) }
+                _settingsState.update {
+                    it.copy(importMessage = s.importingOfficial, importError = false)
+                }
+                val maxEmbedded = draws.maxOfOrNull { com.lotto7.generator.data.OfficialWinningFetcher.parseRoundNumber(it.round) } ?: 0
+                var official = ImportResult(0, 0, "")
+                try {
+                    official = withContext(Dispatchers.IO) {
+                        repo.importMissingAfterRound(maxEmbedded)
+                    }
+                } catch (_: Exception) {
+                    // Best-effort official fetch after embedded import.
+                }
+                showImportResult(
+                    ImportResult(
+                        added = embedded.added + official.added,
+                        skipped = embedded.skipped + official.skipped,
+                        message = ""
+                    )
+                )
             } catch (e: Exception) {
                 _settingsState.update {
                     it.copy(isImporting = false, importMessage = e.message, importError = true)
@@ -351,7 +378,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val lang = language.value
         val s = LocalizedStrings.get(lang)
         val msg = when {
-            result.added == 0 && result.skipped >= 0 -> s.importNone
+            result.added == 0 && result.skipped == 0 -> s.importNone
+            result.added == 0 -> String.format(s.importAlreadyUpToDate, result.skipped)
             else -> String.format(s.importSuccess, result.added, result.skipped)
         }
         _settingsState.update {

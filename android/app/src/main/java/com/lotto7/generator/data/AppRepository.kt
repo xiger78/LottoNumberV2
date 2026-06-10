@@ -3,7 +3,6 @@ package com.lotto7.generator.data
 import android.content.Context
 import com.lotto7.generator.Draw
 import com.lotto7.generator.DrawRepository
-import com.lotto7.generator.Lotto7Engine
 import kotlinx.coroutines.flow.Flow
 
 class AppRepository(
@@ -59,11 +58,19 @@ class AppRepository(
         return entities.mapNotNull { parseNumbers(it.numbers) }
     }
 
+    private suspend fun existingRoundNumbers(): MutableSet<Int> {
+        return winningDao.getAll()
+            .mapNotNull { OfficialWinningFetcher.parseRoundNumber(it.roundLabel).takeIf { n -> n > 0 } }
+            .toMutableSet()
+    }
+
     suspend fun importFromDraws(draws: List<Draw>): ImportResult {
+        val existing = existingRoundNumbers()
         var added = 0
         var skipped = 0
         for (draw in draws) {
-            if (winningDao.findByRound(draw.round) != null) {
+            val roundNum = OfficialWinningFetcher.parseRoundNumber(draw.round)
+            if (roundNum in existing) {
                 skipped++
                 continue
             }
@@ -74,7 +81,12 @@ class AppRepository(
                     numbers = formatNumbers(draw.nums)
                 )
             )
-            if (id > 0) added++ else skipped++
+            if (id > 0) {
+                added++
+                if (roundNum > 0) existing.add(roundNum)
+            } else {
+                skipped++
+            }
         }
         return ImportResult(added, skipped, "")
     }
@@ -99,16 +111,26 @@ class AppRepository(
         return ImportResult(added, skipped, "")
     }
 
+    suspend fun importMissingAfterRound(maxEmbeddedRound: Int): ImportResult {
+        return try {
+            importFetched(OfficialWinningFetcher.fetchMissingAfter(maxEmbeddedRound))
+        } catch (_: Exception) {
+            ImportResult(0, 0, "")
+        }
+    }
+
     suspend fun importFromOfficialSite(): ImportResult {
         val fetched = OfficialWinningFetcher.fetchLatest()
         return importFetched(fetched)
     }
 
     private suspend fun importFetched(fetched: List<FetchedWinning>): ImportResult {
+        val existing = existingRoundNumbers()
         var added = 0
         var skipped = 0
         for (item in fetched) {
-            if (winningDao.findByRound(item.roundLabel) != null) {
+            val roundNum = OfficialWinningFetcher.parseRoundNumber(item.roundLabel)
+            if (roundNum in existing) {
                 skipped++
                 continue
             }
@@ -119,7 +141,12 @@ class AppRepository(
                     numbers = formatNumbers(item.numbers)
                 )
             )
-            if (id > 0) added++ else skipped++
+            if (id > 0) {
+                added++
+                if (roundNum > 0) existing.add(roundNum)
+            } else {
+                skipped++
+            }
         }
         return ImportResult(added, skipped, "")
     }

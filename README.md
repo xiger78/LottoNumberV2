@@ -5,7 +5,7 @@
 User and developer manual for the **Loto Number** Android app and Python CLI — pattern analysis and auto-generation for Japanese **Loto7**.
 
 > **App name:** ロト番号  
-> **Version:** 1.2  
+> **Version:** 1.3.1  
 > **Package:** `com.lotto7.generator`  
 > **Repository:** https://github.com/xiger78/LottoNumber
 
@@ -13,7 +13,7 @@ User and developer manual for the **Loto Number** Android app and Python CLI —
 
 ## 1. Overview
 
-**Loto Number** analyzes 676 past Loto7 main-number draws and generates 10 weighted random combinations based on statistical patterns.
+**Loto Number** analyzes **680** past Loto7 main-number draws and generates 10 weighted random combinations based on statistical patterns.
 
 | Item | Details |
 |------|---------|
@@ -21,7 +21,7 @@ User and developer manual for the **Loto Number** Android app and Python CLI —
 | Data source | `ロ또7.xlsx` → `assets/draws.json` |
 | Default UI language | Japanese |
 | Supported languages | 日本語 / 한국어 / English |
-| APK download | [releases/loto-number-v1.2-debug.apk](releases/loto-number-v1.2-debug.apk) |
+| APK download | [releases/loto-number-v1.3.1-debug.apk](releases/loto-number-v1.3.1-debug.apk) |
 
 ---
 
@@ -53,7 +53,7 @@ Main screen: analyzes Excel draw data and auto-generates numbers.
 
 **Features**
 
-- Pattern analysis over **676 draws** (frequency, kou distribution, odd/even, sum)
+- Pattern analysis over **680 draws** (frequency, kou distribution, odd/even, sum)
 - **Monthly pattern** selection (Jan–Dec) — weights numbers by draw month
 - **Generate 10 sets** — weighted random + pattern filters
 - **Saved winning numbers** — recent winners get lower weight; numbers not in saved draws get a boost
@@ -87,7 +87,7 @@ Numbers: 01 05 12 17 23 28 34
 
 ### 3.3 Winning Lookup (当選照会)
 
-Browse past winning main numbers from embedded Excel data (676 draws).
+Browse past winning main numbers from embedded draw data (**680 draws**).
 
 **Features**
 
@@ -128,8 +128,16 @@ Language and data import options.
 
 | Button | Action |
 |--------|--------|
-| **Auto-register main numbers** | Import missing draws from embedded Excel data (676) into Winning Numbers |
+| **Auto-register main numbers** | Register missing draws from embedded data (680), then fetch newer rounds after the latest embedded draw from the official site |
 | **Fetch from official site** | Fetch latest results from Mizuho Bank and register (requires network; may fail if blocked) |
+
+**Auto-register behavior**
+
+- Progress and result (e.g. *Added 4 / Skipped 676*) are shown in a **banner at the top** of Settings
+- Step 1: import missing rounds from embedded `draws.json`
+- Step 2: check the official site for any draws after the latest embedded round
+
+> If the official site blocks the request, embedded auto-register still works for rounds included in `draws.json`.
 
 ![Settings (English UI)](docs/images/en/screen_settings.png)
 
@@ -138,7 +146,7 @@ Language and data import options.
 ## 4. Number Generation Algorithm
 
 ```
-1. Build per-number weights from 676 draws + saved winning numbers
+1. Build per-number weights from 680 draws + saved winning numbers
 2. Add monthly pattern weights
 3. Pick 7 numbers by weighted random
 4. Apply pattern filters:
@@ -237,6 +245,16 @@ LottoNumber/
 ---
 
 ## 8. Changelog
+
+### v1.3.1
+
+- **Auto-register UX fix** — result banner at top of Settings, clearer “already registered” message, faster import
+- Progress text while registering embedded data and checking the official site
+
+### v1.3
+
+- Embedded draw data extended to **680 rounds** (677–680)
+- **Auto-register** also fetches missing rounds after the latest embedded draw from the official site
 
 ### v1.2
 

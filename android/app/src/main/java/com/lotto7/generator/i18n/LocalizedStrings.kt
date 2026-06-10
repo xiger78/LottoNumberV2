@@ -70,7 +70,11 @@ data class Strings(
     val importing: String,
     val importSuccess: String,
     val importFailed: String,
-    val importNone: String
+    val importNone: String,
+    val importAlreadyUpToDate: String,
+    val dataNotReady: String,
+    val importingEmbedded: String,
+    val importingOfficial: String
 ) {
     fun monthLabel(month: Int): String = "$month$monthSuffix"
 }
@@ -134,7 +138,11 @@ object LocalizedStrings {
         importing = "取得中...",
         importSuccess = "登録 %d件 / スキップ %d件",
         importFailed = "取得に失敗しました。ネットワークを確認してください。",
-        importNone = "新規登録するデータがありません。"
+        importNone = "新規登録するデータがありません。",
+        importAlreadyUpToDate = "未登録データなし（%d件は登録済み）",
+        dataNotReady = "抽選データの読み込み中です。しばらくしてから再度お試しください。",
+        importingEmbedded = "内蔵データを登録中...",
+        importingOfficial = "公式サイトの最新回を確認中..."
     )
 
     private val ko = Strings(
@@ -195,7 +203,11 @@ object LocalizedStrings {
         importing = "가져오는 중...",
         importSuccess = "등록 %d건 / 건너뜀 %d건",
         importFailed = "가져오기 실패. 네트워크를 확인하세요.",
-        importNone = "새로 등록할 데이터가 없습니다."
+        importNone = "새로 등록할 데이터가 없습니다.",
+        importAlreadyUpToDate = "새로 등록할 데이터 없음 (%d건 이미 등록됨)",
+        dataNotReady = "추첨 데이터를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.",
+        importingEmbedded = "내장 데이터 등록 중...",
+        importingOfficial = "공식 사이트 최신 회차 확인 중..."
     )
 
     private val en = Strings(
@@ -256,7 +268,11 @@ object LocalizedStrings {
         importing = "Importing...",
         importSuccess = "Added %d / Skipped %d",
         importFailed = "Fetch failed. Check your network.",
-        importNone = "No new data to register."
+        importNone = "No new data to register.",
+        importAlreadyUpToDate = "Nothing new to register (%d already registered)",
+        dataNotReady = "Draw data is still loading. Please try again shortly.",
+        importingEmbedded = "Registering embedded draws...",
+        importingOfficial = "Checking official site for latest draws..."
     )
 
     fun get(language: AppLanguage): Strings = when (language) {
