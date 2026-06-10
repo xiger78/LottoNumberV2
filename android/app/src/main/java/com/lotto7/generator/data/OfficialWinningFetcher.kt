@@ -22,6 +22,9 @@ object OfficialWinningFetcher {
     fun backnumberUrl(round: Int): String =
         "https://www.mizuhobank.co.jp/takarakuji/check/loto/backnumber/detail.html?fromto=$round&loto=7"
 
+    fun parseRoundNumber(label: String): Int =
+        Regex("第(\\d+)回").find(label)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+
     suspend fun fetchLatest(): List<FetchedWinning> {
         val html = fetchHtml(mainPageUrl) ?: throw IllegalStateException("fetch_failed")
         val parsed = parseFromHtml(html)
@@ -35,6 +38,46 @@ object OfficialWinningFetcher {
             if (detailParsed.isNotEmpty()) return detailParsed
         }
         throw IllegalStateException("parse_failed")
+    }
+
+    /** Fetch draws after [lastKnownRound] from the official site (backnumber pages). */
+    suspend fun fetchMissingAfter(lastKnownRound: Int): List<FetchedWinning> {
+        if (lastKnownRound <= 0) return fetchLatestOrEmpty()
+
+        val results = mutableListOf<FetchedWinning>()
+        val mainHtml = fetchHtml(mainPageUrl)
+        if (mainHtml != null && !mainHtml.contains("Access Denied", ignoreCase = true)) {
+            results.addAll(
+                parseFromHtml(mainHtml).filter { parseRoundNumber(it.roundLabel) > lastKnownRound }
+            )
+        }
+
+        val latestRound = when {
+            results.isNotEmpty() -> results.maxOf { parseRoundNumber(it.roundLabel) }
+            mainHtml != null -> guessLatestRound(mainHtml)
+            else -> lastKnownRound
+        }
+        if (latestRound <= lastKnownRound) {
+            return results.distinctBy { it.roundLabel }
+        }
+
+        for (round in (lastKnownRound + 1)..latestRound) {
+            if (results.any { parseRoundNumber(it.roundLabel) == round }) continue
+            val detailHtml = fetchHtml(backnumberUrl(round)) ?: continue
+            if (detailHtml.contains("Access Denied", ignoreCase = true)) continue
+            for (item in parseFromHtml(detailHtml)) {
+                if (parseRoundNumber(item.roundLabel) > lastKnownRound) {
+                    results.add(item)
+                }
+            }
+        }
+        return results.distinctBy { it.roundLabel }
+    }
+
+    private suspend fun fetchLatestOrEmpty(): List<FetchedWinning> = try {
+        fetchLatest()
+    } catch (_: Exception) {
+        emptyList()
     }
 
     private fun fetchHtml(url: String): String? {

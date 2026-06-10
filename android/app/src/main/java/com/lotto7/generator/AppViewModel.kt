@@ -318,7 +318,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _settingsState.update { it.copy(isImporting = true, importMessage = null, importError = false) }
             try {
-                val result = withContext(Dispatchers.IO) { repo.importFromDraws(draws) }
+                val result = withContext(Dispatchers.IO) { repo.importAutoRegister(draws) }
                 showImportResult(result)
             } catch (e: Exception) {
                 _settingsState.update {
