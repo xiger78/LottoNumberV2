@@ -19,6 +19,8 @@ python lotto7_generator.py
 
 ## Android アプリ
 
+APK ダウンロード: [releases/loto-number-v1.1-debug.apk](../releases/loto-number-v1.1-debug.apk)
+
 詳細は [android/README.md](android/README.md) および [docs/MANUAL.md](docs/MANUAL.md) を参照。
 
 ```bash
