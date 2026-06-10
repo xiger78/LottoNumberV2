@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.lotto7.generator.i18n.ProvideStrings
 import com.lotto7.generator.i18n.S
+import com.lotto7.generator.ui.components.LottoBanner
 import com.lotto7.generator.ui.navigation.AppScreen
 import com.lotto7.generator.ui.screens.HistoryScreen
 import com.lotto7.generator.ui.screens.LottoScreen
@@ -118,43 +120,48 @@ fun MainApp(viewModel: AppViewModel) {
             }
         }
     ) { padding ->
-        when (currentScreen) {
-            AppScreen.LOTTO -> {
-                if (lottoState.isLoading) {
-                    LoadingBox(padding, lottoState.errorMessage)
-                } else {
-                    LottoScreen(
-                        padding = padding,
-                        uiState = lottoState,
-                        onRegenerate = viewModel::regenerate,
-                        onMonthSelected = viewModel::setMonth
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            LottoBanner()
+            Box(modifier = Modifier.weight(1f)) {
+                when (currentScreen) {
+                    AppScreen.LOTTO -> {
+                        if (lottoState.isLoading) {
+                            LoadingBox(androidx.compose.foundation.layout.PaddingValues(), lottoState.errorMessage)
+                        } else {
+                            LottoScreen(
+                                padding = androidx.compose.foundation.layout.PaddingValues(),
+                                uiState = lottoState,
+                                onRegenerate = viewModel::regenerate,
+                                onMonthSelected = viewModel::setMonth
+                            )
+                        }
+                    }
+                    AppScreen.WINNING -> WinningScreen(
+                        padding = androidx.compose.foundation.layout.PaddingValues(),
+                        uiState = winningState,
+                        onAdd = { viewModel.openWinningDialog() },
+                        onEdit = viewModel::openWinningDialog,
+                        onDelete = viewModel::requestDeleteWinning,
+                        onConfirmDelete = viewModel::confirmDeleteWinning,
+                        onCancelDelete = viewModel::cancelDeleteWinning,
+                        onSave = viewModel::saveWinning,
+                        onDismissDialog = viewModel::closeWinningDialog,
+                        onRoundChange = viewModel::updateRoundInput,
+                        onDateChange = viewModel::updateDateInput,
+                        onNumbersChange = viewModel::updateNumbersInput
+                    )
+                    AppScreen.HISTORY -> HistoryScreen(
+                        padding = androidx.compose.foundation.layout.PaddingValues(),
+                        uiState = historyState,
+                        onLoadPage = viewModel::loadHistoryPage
+                    )
+                    AppScreen.SETTINGS -> SettingsScreen(
+                        padding = androidx.compose.foundation.layout.PaddingValues(),
+                        currentLanguage = language,
+                        onLanguageSelected = viewModel::setLanguage
                     )
                 }
             }
-            AppScreen.WINNING -> WinningScreen(
-                padding = padding,
-                uiState = winningState,
-                onAdd = { viewModel.openWinningDialog() },
-                onEdit = viewModel::openWinningDialog,
-                onDelete = viewModel::requestDeleteWinning,
-                onConfirmDelete = viewModel::confirmDeleteWinning,
-                onCancelDelete = viewModel::cancelDeleteWinning,
-                onSave = viewModel::saveWinning,
-                onDismissDialog = viewModel::closeWinningDialog,
-                onRoundChange = viewModel::updateRoundInput,
-                onDateChange = viewModel::updateDateInput,
-                onNumbersChange = viewModel::updateNumbersInput
-            )
-            AppScreen.HISTORY -> HistoryScreen(
-                padding = padding,
-                uiState = historyState,
-                onLoadPage = viewModel::loadHistoryPage
-            )
-            AppScreen.SETTINGS -> SettingsScreen(
-                padding = padding,
-                currentLanguage = language,
-                onLanguageSelected = viewModel::setLanguage
-            )
         }
     }
 }

@@ -19,7 +19,7 @@ python lotto7_generator.py
 
 ## Android アプリ
 
-詳細は [android/README.md](android/README.md) を参照。
+詳細は [android/README.md](android/README.md) および [docs/MANUAL.md](docs/MANUAL.md) を参照。
 
 ```bash
 cd android && ./gradlew assembleDebug
