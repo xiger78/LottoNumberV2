@@ -13,6 +13,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.lotto7.generator.data.ImportResult
+import com.lotto7.generator.i18n.LocalizedStrings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 const val OFFICIAL_LOTO7_URL = "https://www.mizuhobank.co.jp/takarakuji/check/loto/loto7/index.html"
 
@@ -34,6 +38,21 @@ data class WinningUiState(
     val numbersInput: String = "",
     val errorMessage: String? = null,
     val confirmDelete: WinningNumberEntity? = null
+)
+
+data class LookupUiState(
+    val isLoading: Boolean = false,
+    val items: List<Draw> = emptyList(),
+    val searchQuery: String = "",
+    val currentPage: Int = 0,
+    val totalPages: Int = 1,
+    val totalCount: Int = 0
+)
+
+data class SettingsUiState(
+    val isImporting: Boolean = false,
+    val importMessage: String? = null,
+    val importError: Boolean = false
 )
 
 data class HistoryUiState(
@@ -59,6 +78,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _historyState = MutableStateFlow(HistoryUiState())
     val historyState: StateFlow<HistoryUiState> = _historyState.asStateFlow()
+
+    private val _lookupState = MutableStateFlow(LookupUiState())
+    val lookupState: StateFlow<LookupUiState> = _lookupState.asStateFlow()
+
+    private val _settingsState = MutableStateFlow(SettingsUiState())
+    val settingsState: StateFlow<SettingsUiState> = _settingsState.asStateFlow()
 
     private lateinit var draws: List<Draw>
     private lateinit var analyzer: Lotto7Engine.PatternAnalyzer
@@ -86,6 +111,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                         savedWinningCount = savedWinning.size
                     )
                 }
+                refreshLookupPage(0)
             } catch (e: Exception) {
                 _lottoState.update {
                     it.copy(isLoading = false, errorMessage = e.message)
@@ -248,5 +274,88 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setLanguage(lang: AppLanguage) {
         viewModelScope.launch { repo.setLanguage(lang) }
+    }
+
+    fun setLookupSearch(query: String) {
+        _lookupState.update { it.copy(searchQuery = query, currentPage = 0) }
+        refreshLookupPage(0)
+    }
+
+    fun loadLookupPage(page: Int) {
+        refreshLookupPage(page)
+    }
+
+    private fun refreshLookupPage(page: Int) {
+        if (!::draws.isInitialized) return
+        val query = _lookupState.value.searchQuery.trim()
+        val filtered = if (query.isEmpty()) {
+            draws.asReversed()
+        } else {
+            draws.asReversed().filter {
+                it.round.contains(query, ignoreCase = true) ||
+                    it.date.contains(query, ignoreCase = true) ||
+                    it.nums.any { n -> n.toString() == query }
+            }
+        }
+        val pageSize = 10
+        val totalPages = if (filtered.isEmpty()) 1 else ((filtered.size - 1) / pageSize) + 1
+        val safePage = page.coerceIn(0, totalPages - 1)
+        val slice = filtered.drop(safePage * pageSize).take(pageSize)
+        _lookupState.update {
+            LookupUiState(
+                isLoading = false,
+                items = slice,
+                searchQuery = query,
+                currentPage = safePage,
+                totalPages = totalPages,
+                totalCount = draws.size
+            )
+        }
+    }
+
+    fun autoRegisterFromExcel() {
+        if (!::draws.isInitialized) return
+        viewModelScope.launch {
+            _settingsState.update { it.copy(isImporting = true, importMessage = null, importError = false) }
+            try {
+                val result = withContext(Dispatchers.IO) { repo.importFromDraws(draws) }
+                showImportResult(result)
+            } catch (e: Exception) {
+                _settingsState.update {
+                    it.copy(isImporting = false, importMessage = e.message, importError = true)
+                }
+            }
+        }
+    }
+
+    fun fetchFromOfficialSite() {
+        viewModelScope.launch {
+            _settingsState.update { it.copy(isImporting = true, importMessage = null, importError = false) }
+            try {
+                val result = withContext(Dispatchers.IO) { repo.importFromOfficialSite() }
+                showImportResult(result)
+            } catch (e: Exception) {
+                val lang = language.value
+                val msg = when (e.message) {
+                    "fetch_failed", "parse_failed" -> LocalizedStrings.get(lang).importFailed
+                    else -> e.message ?: LocalizedStrings.get(lang).importFailed
+                }
+                _settingsState.update {
+                    it.copy(isImporting = false, importMessage = msg, importError = true)
+                }
+            }
+        }
+    }
+
+    private fun showImportResult(result: ImportResult) {
+        val lang = language.value
+        val s = LocalizedStrings.get(lang)
+        val msg = when {
+            result.added == 0 && result.skipped >= 0 -> s.importNone
+            else -> String.format(s.importSuccess, result.added, result.skipped)
+        }
+        _settingsState.update {
+            it.copy(isImporting = false, importMessage = msg, importError = false)
+        }
     }
 }

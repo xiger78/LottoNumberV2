@@ -16,6 +16,7 @@ data class Strings(
     val appName: String,
     val navLotto: String,
     val navWinning: String,
+    val navLookup: String,
     val navHistory: String,
     val navSettings: String,
     val patternAnalysis: String,
@@ -57,7 +58,19 @@ data class Strings(
     val sumLabel: String,
     val oddLabel: String,
     val kouLabel: String,
-    val monthSuffix: String
+    val monthSuffix: String,
+    val lookupTitle: String,
+    val lookupSearchHint: String,
+    val lookupEmpty: String,
+    val lookupTotal: String,
+    val autoRegisterExcel: String,
+    val autoRegisterExcelDesc: String,
+    val fetchOfficial: String,
+    val fetchOfficialDesc: String,
+    val importing: String,
+    val importSuccess: String,
+    val importFailed: String,
+    val importNone: String
 ) {
     fun monthLabel(month: Int): String = "$month$monthSuffix"
 }
@@ -67,6 +80,7 @@ object LocalizedStrings {
         appName = "ロト番号",
         navLotto = "ロト番号",
         navWinning = "当選数字",
+        navLookup = "当選照会",
         navHistory = "生成履歴",
         navSettings = "設定",
         patternAnalysis = "パターン分析結果",
@@ -108,13 +122,26 @@ object LocalizedStrings {
         sumLabel = "合",
         oddLabel = "奇",
         kouLabel = "口",
-        monthSuffix = "月"
+        monthSuffix = "月",
+        lookupTitle = "過去当選番号照会",
+        lookupSearchHint = "回別・日付で検索",
+        lookupEmpty = "該当する当選番号がありません。",
+        lookupTotal = "全 %d 回",
+        autoRegisterExcel = "本数字自動登録",
+        autoRegisterExcelDesc = "内蔵エクセルデータ(676回)から未登録分を当選数字に登録",
+        fetchOfficial = "公式サイトから取得",
+        fetchOfficialDesc = "みずほ銀行当選発表ページから最新番号を取得・登録",
+        importing = "取得中...",
+        importSuccess = "登録 %d件 / スキップ %d件",
+        importFailed = "取得に失敗しました。ネットワークを確認してください。",
+        importNone = "新規登録するデータがありません。"
     )
 
     private val ko = Strings(
         appName = "로또번호",
         navLotto = "로또번호",
         navWinning = "당첨숫자",
+        navLookup = "당첨조회",
         navHistory = "생성이력",
         navSettings = "설정",
         patternAnalysis = "패턴 분석 결과",
@@ -156,13 +183,26 @@ object LocalizedStrings {
         sumLabel = "합",
         oddLabel = "홀",
         kouLabel = "口",
-        monthSuffix = "月"
+        monthSuffix = "月",
+        lookupTitle = "과거 당첨번호 조회",
+        lookupSearchHint = "회차·날짜 검색",
+        lookupEmpty = "해당하는 당첨번호가 없습니다.",
+        lookupTotal = "총 %d회",
+        autoRegisterExcel = "본숫자 자동등록",
+        autoRegisterExcelDesc = "내장 엑셀 데이터(676회)에서 미등록분을 당첨숫자에 등록",
+        fetchOfficial = "공식 사이트에서 가져오기",
+        fetchOfficialDesc = "みずほ銀行 당첨 발표 페이지에서 최신 번호를 가져와 등록",
+        importing = "가져오는 중...",
+        importSuccess = "등록 %d건 / 건너뜀 %d건",
+        importFailed = "가져오기 실패. 네트워크를 확인하세요.",
+        importNone = "새로 등록할 데이터가 없습니다."
     )
 
     private val en = Strings(
         appName = "Loto Number",
         navLotto = "Loto No.",
         navWinning = "Winning No.",
+        navLookup = "Lookup",
         navHistory = "History",
         navSettings = "Settings",
         patternAnalysis = "Pattern Analysis",
@@ -204,7 +244,19 @@ object LocalizedStrings {
         sumLabel = "Sum",
         oddLabel = "Odd",
         kouLabel = "Kou",
-        monthSuffix = "M"
+        monthSuffix = "M",
+        lookupTitle = "Past Winning Lookup",
+        lookupSearchHint = "Search round or date",
+        lookupEmpty = "No matching winning numbers.",
+        lookupTotal = "Total %d draws",
+        autoRegisterExcel = "Auto-register main numbers",
+        autoRegisterExcelDesc = "Register missing draws from embedded Excel data (676)",
+        fetchOfficial = "Fetch from official site",
+        fetchOfficialDesc = "Fetch latest numbers from Mizuho Bank results page",
+        importing = "Importing...",
+        importSuccess = "Added %d / Skipped %d",
+        importFailed = "Fetch failed. Check your network.",
+        importNone = "No new data to register."
     )
 
     fun get(language: AppLanguage): Strings = when (language) {

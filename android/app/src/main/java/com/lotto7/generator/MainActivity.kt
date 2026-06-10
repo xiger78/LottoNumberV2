@@ -9,10 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,6 +38,7 @@ import com.lotto7.generator.i18n.S
 import com.lotto7.generator.ui.components.LottoBanner
 import com.lotto7.generator.ui.navigation.AppScreen
 import com.lotto7.generator.ui.screens.HistoryScreen
+import com.lotto7.generator.ui.screens.LookupScreen
 import com.lotto7.generator.ui.screens.LottoScreen
 import com.lotto7.generator.ui.screens.SettingsScreen
 import com.lotto7.generator.ui.screens.WinningScreen
@@ -68,12 +70,15 @@ fun MainApp(viewModel: AppViewModel) {
 
     val lottoState by viewModel.lottoState.collectAsState()
     val winningState by viewModel.winningState.collectAsState()
+    val lookupState by viewModel.lookupState.collectAsState()
     val historyState by viewModel.historyState.collectAsState()
+    val settingsState by viewModel.settingsState.collectAsState()
     val language by viewModel.language.collectAsState()
 
     val title = when (currentScreen) {
         AppScreen.LOTTO -> s.navLotto
         AppScreen.WINNING -> s.navWinning
+        AppScreen.LOOKUP -> s.navLookup
         AppScreen.HISTORY -> s.navHistory
         AppScreen.SETTINGS -> s.navSettings
     }
@@ -103,6 +108,15 @@ fun MainApp(viewModel: AppViewModel) {
                     label = { Text(s.navWinning) }
                 )
                 NavigationBarItem(
+                    selected = currentScreen == AppScreen.LOOKUP,
+                    onClick = {
+                        currentScreen = AppScreen.LOOKUP
+                        viewModel.loadLookupPage(lookupState.currentPage)
+                    },
+                    icon = { Icon(Icons.Default.Search, contentDescription = s.navLookup) },
+                    label = { Text(s.navLookup) }
+                )
+                NavigationBarItem(
                     selected = currentScreen == AppScreen.HISTORY,
                     onClick = {
                         currentScreen = AppScreen.HISTORY
@@ -126,7 +140,7 @@ fun MainApp(viewModel: AppViewModel) {
                 when (currentScreen) {
                     AppScreen.LOTTO -> {
                         if (lottoState.isLoading) {
-                            LoadingBox(androidx.compose.foundation.layout.PaddingValues(), lottoState.errorMessage)
+                            LoadingBox(error = lottoState.errorMessage)
                         } else {
                             LottoScreen(
                                 padding = androidx.compose.foundation.layout.PaddingValues(),
@@ -150,6 +164,12 @@ fun MainApp(viewModel: AppViewModel) {
                         onDateChange = viewModel::updateDateInput,
                         onNumbersChange = viewModel::updateNumbersInput
                     )
+                    AppScreen.LOOKUP -> LookupScreen(
+                        padding = androidx.compose.foundation.layout.PaddingValues(),
+                        uiState = lookupState,
+                        onSearchChange = viewModel::setLookupSearch,
+                        onLoadPage = viewModel::loadLookupPage
+                    )
                     AppScreen.HISTORY -> HistoryScreen(
                         padding = androidx.compose.foundation.layout.PaddingValues(),
                         uiState = historyState,
@@ -157,8 +177,11 @@ fun MainApp(viewModel: AppViewModel) {
                     )
                     AppScreen.SETTINGS -> SettingsScreen(
                         padding = androidx.compose.foundation.layout.PaddingValues(),
+                        uiState = settingsState,
                         currentLanguage = language,
-                        onLanguageSelected = viewModel::setLanguage
+                        onLanguageSelected = viewModel::setLanguage,
+                        onAutoRegisterExcel = viewModel::autoRegisterFromExcel,
+                        onFetchOfficial = viewModel::fetchFromOfficialSite
                     )
                 }
             }
@@ -167,11 +190,9 @@ fun MainApp(viewModel: AppViewModel) {
 }
 
 @Composable
-private fun LoadingBox(padding: androidx.compose.foundation.layout.PaddingValues, error: String?) {
+private fun LoadingBox(error: String?) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         if (error != null) {

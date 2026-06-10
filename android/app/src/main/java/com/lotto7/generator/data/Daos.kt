@@ -1,10 +1,11 @@
 package com.lotto7.generator.data
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Delete
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,8 +16,17 @@ interface WinningNumberDao {
     @Query("SELECT * FROM winning_numbers ORDER BY updatedAt DESC")
     suspend fun getAll(): List<WinningNumberEntity>
 
+    @Query("SELECT * FROM winning_numbers WHERE roundLabel = :round LIMIT 1")
+    suspend fun findByRound(round: String): WinningNumberEntity?
+
+    @Query("SELECT COUNT(*) FROM winning_numbers")
+    suspend fun count(): Int
+
     @Insert
     suspend fun insert(entity: WinningNumberEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIgnore(entity: WinningNumberEntity): Long
 
     @Update
     suspend fun update(entity: WinningNumberEntity)

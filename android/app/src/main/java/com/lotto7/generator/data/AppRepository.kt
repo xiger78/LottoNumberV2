@@ -58,4 +58,45 @@ class AppRepository(
     fun winningNumberLists(entities: List<WinningNumberEntity>): List<List<Int>> {
         return entities.mapNotNull { parseNumbers(it.numbers) }
     }
+
+    suspend fun importFromDraws(draws: List<Draw>): ImportResult {
+        var added = 0
+        var skipped = 0
+        for (draw in draws) {
+            if (winningDao.findByRound(draw.round) != null) {
+                skipped++
+                continue
+            }
+            val id = winningDao.insertIgnore(
+                WinningNumberEntity(
+                    roundLabel = draw.round,
+                    drawDate = draw.date,
+                    numbers = formatNumbers(draw.nums)
+                )
+            )
+            if (id > 0) added++ else skipped++
+        }
+        return ImportResult(added, skipped, "")
+    }
+
+    suspend fun importFromOfficialSite(): ImportResult {
+        val fetched = OfficialWinningFetcher.fetchLatest()
+        var added = 0
+        var skipped = 0
+        for (item in fetched) {
+            if (winningDao.findByRound(item.roundLabel) != null) {
+                skipped++
+                continue
+            }
+            val id = winningDao.insertIgnore(
+                WinningNumberEntity(
+                    roundLabel = item.roundLabel,
+                    drawDate = item.drawDate,
+                    numbers = formatNumbers(item.numbers)
+                )
+            )
+            if (id > 0) added++ else skipped++
+        }
+        return ImportResult(added, skipped, "")
+    }
 }
