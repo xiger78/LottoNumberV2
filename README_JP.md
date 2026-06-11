@@ -5,7 +5,7 @@
 日本 **ロト7 (Loto7)** 本数字パターン分析・自動生成 — Androidアプリおよび Python CLI の使用・開発マニュアル
 
 > **アプリ名:** ロト番号  
-> **バージョン:** 1.3.1  
+> **バージョン:** 1.4  
 > **パッケージ:** `com.lotto7.generator`  
 > **リポジトリ:** https://github.com/xiger78/LottoNumber
 
@@ -21,7 +21,7 @@
 | データ元 | `ロ또7.xlsx` → `assets/draws.json` |
 | デフォルト言語 | 日本語 |
 | 対応言語 | 日本語 / 한국어 / English |
-| APKダウンロード | [releases/loto-number-v1.3.1-debug.apk](releases/loto-number-v1.3.1-debug.apk) |
+| APKダウンロード | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk)（リリース版） |
 
 ---
 
@@ -198,6 +198,20 @@ python android/export_draws.py
 
 ### 6.2 ビルド
 
+**リリースビルド（推奨）**
+
+```bash
+export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+cd android
+cp keystore.properties.example keystore.properties   # キーストアパス・パスワードを設定
+./gradlew assembleRelease
+```
+
+**APK出力:** `android/app/build/outputs/apk/release/app-release.apk`  
+配布用: `releases/loto-number-v1.4.apk`
+
+**デバッグビルド**
+
 ```bash
 export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
 cd android
@@ -248,6 +262,11 @@ LottoNumber/
 ---
 
 ## 8. 変更履歴
+
+### v1.4
+
+- **当選数字** メニューを起動時・タブ表示時に自動同期（680回、新しい順）
+- 署名付き **リリースAPK** ビルド（`assembleRelease`）
 
 ### v1.3.1
 

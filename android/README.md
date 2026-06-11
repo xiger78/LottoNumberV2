@@ -7,7 +7,7 @@
 | メニュー | 説明 |
 |---------|------|
 | **ロト番号** | 内蔵本数字データ(680回)を分析して10組自動生成。登録済み当選数字も反映 |
-| **当選数字** | 発表された当選数字の登録・修正・削除 |
+| **当選数字** | 発表された当選数字の登録・修正・削除（起動時自動同期） |
 | **当選照会** | 内蔵680回の過去当選本数字を検索・ページ表示 |
 | **生成履歴** | 自動生成番号を日時降順で10件ずつ表示 |
 | **設定** | 表示言語、本数字自動登録、公式サイトから取得 |
@@ -18,13 +18,23 @@
 
 ## ビルド
 
+**リリース（推奨）**
+
+```bash
+cd android
+cp keystore.properties.example keystore.properties
+./gradlew assembleRelease
+```
+
+APK: `app/build/outputs/apk/release/app-release.apk`  
+配布: `releases/loto-number-v1.4.apk`
+
+**デバッグ**
+
 ```bash
 cd android
 ./gradlew assembleDebug
 ```
-
-APK: `app/build/outputs/apk/debug/app-debug.apk`  
-リリース用: `releases/loto-number-v1.3.1-debug.apk`
 
 Android Studioで `android` フォルダを開いて実行することもできます (JDK 17 必要)。
 

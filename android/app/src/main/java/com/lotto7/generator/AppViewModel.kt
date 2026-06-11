@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.lotto7.generator.data.ImportResult
+import com.lotto7.generator.data.OfficialWinningFetcher
 import com.lotto7.generator.i18n.LocalizedStrings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,6 +32,8 @@ data class LottoUiState(
 
 data class WinningUiState(
     val items: List<WinningNumberEntity> = emptyList(),
+    val totalCount: Int = 0,
+    val isSyncing: Boolean = false,
     val showDialog: Boolean = false,
     val editing: WinningNumberEntity? = null,
     val roundInput: String = "",
@@ -100,6 +103,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 val loaded = repo.loadDraws()
                 draws = loaded
                 analyzer = Lotto7Engine.PatternAnalyzer(draws)
+                syncWinningNumbers(showSyncing = false)
                 refreshSavedWinning()
                 val month = Lotto7Engine.resolveTargetMonth(draws)
                 _lottoState.update {
@@ -123,9 +127,34 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private fun observeWinningNumbers() {
         viewModelScope.launch {
             repo.winningNumbersFlow.collect { items ->
-                _winningState.update { it.copy(items = items) }
-                refreshSavedWinningFromEntities(items)
+                val sorted = items.sortedWith(
+                    compareByDescending<WinningNumberEntity> {
+                        OfficialWinningFetcher.parseRoundNumber(it.roundLabel)
+                    }.thenByDescending { it.updatedAt }
+                )
+                _winningState.update {
+                    it.copy(items = sorted, totalCount = sorted.size, isSyncing = false)
+                }
+                refreshSavedWinningFromEntities(sorted)
             }
+        }
+    }
+
+    fun refreshWinningNumbers() {
+        if (!::draws.isInitialized) return
+        viewModelScope.launch {
+            _winningState.update { it.copy(isSyncing = true) }
+            syncWinningNumbers(showSyncing = true)
+        }
+    }
+
+    private suspend fun syncWinningNumbers(showSyncing: Boolean) {
+        if (!::draws.isInitialized) return
+        if (showSyncing) {
+            _winningState.update { it.copy(isSyncing = true) }
+        }
+        withContext(Dispatchers.IO) {
+            repo.syncWinningFromDraws(draws)
         }
     }
 
@@ -327,26 +356,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 it.copy(isImporting = true, importMessage = s.importingEmbedded, importError = false)
             }
             try {
-                val embedded = withContext(Dispatchers.IO) { repo.importFromDraws(draws) }
-                _settingsState.update {
-                    it.copy(importMessage = s.importingOfficial, importError = false)
-                }
-                val maxEmbedded = draws.maxOfOrNull { com.lotto7.generator.data.OfficialWinningFetcher.parseRoundNumber(it.round) } ?: 0
-                var official = ImportResult(0, 0, "")
-                try {
-                    official = withContext(Dispatchers.IO) {
-                        repo.importMissingAfterRound(maxEmbedded)
-                    }
-                } catch (_: Exception) {
-                    // Best-effort official fetch after embedded import.
-                }
-                showImportResult(
-                    ImportResult(
-                        added = embedded.added + official.added,
-                        skipped = embedded.skipped + official.skipped,
-                        message = ""
-                    )
-                )
+                val result = withContext(Dispatchers.IO) { repo.syncWinningFromDraws(draws) }
+                showImportResult(result)
             } catch (e: Exception) {
                 _settingsState.update {
                     it.copy(isImporting = false, importMessage = e.message, importError = true)

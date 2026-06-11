@@ -5,6 +5,8 @@ __pycache__/
 android/.gradle/
 android/.idea/
 android/local.properties
+android/keystore.properties
+android/lotto-release.keystore
 android/app/build/
 android/build/
 android/.cxx/

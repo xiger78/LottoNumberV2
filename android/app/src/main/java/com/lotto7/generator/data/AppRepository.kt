@@ -91,24 +91,17 @@ class AppRepository(
         return ImportResult(added, skipped, "")
     }
 
-    suspend fun importAutoRegister(draws: List<Draw>): ImportResult {
-        var added = 0
-        var skipped = 0
+    suspend fun importAutoRegister(draws: List<Draw>): ImportResult = syncWinningFromDraws(draws)
 
-        fun merge(result: ImportResult) {
-            added += result.added
-            skipped += result.skipped
-        }
-
-        merge(importFromDraws(draws))
-
+    suspend fun syncWinningFromDraws(draws: List<Draw>): ImportResult {
+        val embedded = importFromDraws(draws)
         val maxEmbedded = draws.maxOfOrNull { OfficialWinningFetcher.parseRoundNumber(it.round) } ?: 0
-        try {
-            merge(importFetched(OfficialWinningFetcher.fetchMissingAfter(maxEmbedded)))
-        } catch (_: Exception) {
-            // Official fetch is best-effort after embedded import.
-        }
-        return ImportResult(added, skipped, "")
+        val official = importMissingAfterRound(maxEmbedded)
+        return ImportResult(
+            added = embedded.added + official.added,
+            skipped = embedded.skipped + official.skipped,
+            message = ""
+        )
     }
 
     suspend fun importMissingAfterRound(maxEmbeddedRound: Int): ImportResult {

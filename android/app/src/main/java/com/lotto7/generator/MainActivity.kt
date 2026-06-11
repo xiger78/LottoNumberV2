@@ -111,7 +111,10 @@ fun MainApp(viewModel: AppViewModel) {
                 )
                 NavigationBarItem(
                     selected = currentScreen == AppScreen.WINNING,
-                    onClick = { currentScreen = AppScreen.WINNING },
+                    onClick = {
+                        currentScreen = AppScreen.WINNING
+                        viewModel.refreshWinningNumbers()
+                    },
                     icon = { Icon(Icons.Default.Star, contentDescription = s.navWinning) },
                     label = { Text(s.navWinning) }
                 )

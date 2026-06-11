@@ -5,7 +5,7 @@
 User and developer manual for the **Loto Number** Android app and Python CLI — pattern analysis and auto-generation for Japanese **Loto7**.
 
 > **App name:** ロト番号  
-> **Version:** 1.3.1  
+> **Version:** 1.4  
 > **Package:** `com.lotto7.generator`  
 > **Repository:** https://github.com/xiger78/LottoNumber
 
@@ -21,7 +21,7 @@ User and developer manual for the **Loto Number** Android app and Python CLI —
 | Data source | `ロ또7.xlsx` → `assets/draws.json` |
 | Default UI language | Japanese |
 | Supported languages | 日本語 / 한국어 / English |
-| APK download | [releases/loto-number-v1.3.1-debug.apk](releases/loto-number-v1.3.1-debug.apk) |
+| APK download | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk) (release) |
 
 ---
 
@@ -194,6 +194,20 @@ python android/export_draws.py
 
 ### 6.2 Build
 
+**Release (recommended)**
+
+```bash
+export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+cd android
+cp keystore.properties.example keystore.properties   # set keystore path and passwords
+./gradlew assembleRelease
+```
+
+Output: `android/app/build/outputs/apk/release/app-release.apk`  
+Signed release builds are published as `releases/loto-number-v1.4.apk`.
+
+**Debug**
+
 ```bash
 export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
 cd android
@@ -245,6 +259,11 @@ LottoNumber/
 ---
 
 ## 8. Changelog
+
+### v1.4
+
+- **Winning Numbers** auto-sync on app start and when opening the tab (680 draws, newest first)
+- Signed **release APK** build (`assembleRelease`)
 
 ### v1.3.1
 

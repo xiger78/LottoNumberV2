@@ -5,7 +5,7 @@
 일본 **로또7(Loto7)** 본숫자 패턴 분석 및 자동 생성 — Android 앱 및 Python CLI 사용·개발 메뉴얼
 
 > **앱 이름:** ロト番号 (일본어 표기)  
-> **버전:** 1.3.1  
+> **버전:** 1.4  
 > **패키지:** `com.lotto7.generator`  
 > **저장소:** https://github.com/xiger78/LottoNumber
 
@@ -21,7 +21,7 @@
 | 데이터 출처 | `ロ또7.xlsx` → `assets/draws.json` |
 | 기본 표시 언어 | 일본어 (日本語) |
 | 지원 언어 | 日本語 / 한국어 / English |
-| APK 다운로드 | [releases/loto-number-v1.3.1-debug.apk](releases/loto-number-v1.3.1-debug.apk) |
+| APK 다운로드 | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk) (정식) |
 
 ---
 
@@ -198,6 +198,20 @@ python android/export_draws.py
 
 ### 6.2 빌드
 
+**정식(release) 빌드 (권장)**
+
+```bash
+export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+cd android
+cp keystore.properties.example keystore.properties   # 키스토어 경로·비밀번호 설정
+./gradlew assembleRelease
+```
+
+**APK 출력:** `android/app/build/outputs/apk/release/app-release.apk`  
+배포용: `releases/loto-number-v1.4.apk`
+
+**디버그 빌드**
+
 ```bash
 export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
 cd android
@@ -248,6 +262,11 @@ LottoNumber/
 ---
 
 ## 8. 변경 이력
+
+### v1.4
+
+- **당첨숫자** 메뉴 앱 시작·탭 진입 시 자동 동기화 (680회, 최신순)
+- 서명된 **정식 APK** 빌드 (`assembleRelease`)
 
 ### v1.3.1
 
