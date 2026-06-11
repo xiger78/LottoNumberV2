@@ -21,7 +21,8 @@ User and developer manual for the **Loto Number** Android app and Python CLI —
 | Data source | `ロ또7.xlsx` → `assets/draws.json` |
 | Default UI language | Japanese |
 | Supported languages | 日本語 / 한국어 / English |
-| APK download | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk) (release) |
+| APK download | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk) (signed release) |
+| Build | Release `assembleRelease` / Debug `assembleDebug` |
 
 ---
 
@@ -65,9 +66,18 @@ Main screen: analyzes Excel draw data and auto-generates numbers.
 
 ### 3.2 Winning Numbers (当選数字)
 
-Register, edit, and delete announced winning main numbers. Saved entries feed into the generation algorithm.
+View, register, edit, and delete winning main numbers. **Latest draw data is synced automatically.** Saved entries feed into the generation algorithm.
 
-**Features**
+**Auto-sync (v1.4)**
+
+- **On app start** — imports missing rounds from embedded `draws.json` (680) and fetches newer draws from the official site
+- **When opening this tab** — re-checks and updates any missing rounds
+- Sorted by **round descending** (第680回 → 第679回 …), with **Total N draws** at the top
+- **Progress bar** while syncing
+
+> You do not need to tap **Auto-register** in Settings for data to appear here.
+
+**Manual entry**
 
 - **Add (+)** — round, draw date, 7 main numbers (1–37)
 - **Edit / Delete** — with confirmation
@@ -252,8 +262,9 @@ LottoNumber/
 ├── lotto7_generator.py    # Python CLI
 ├── requirements.txt
 ├── docs/images/           # Screenshots (en/, ko/, ja/)
-├── releases/              # APK files
+├── releases/              # APK files (loto-number-v1.4.apk, etc.)
 └── android/               # Android app source
+    └── keystore.properties.example  # Release signing template
 ```
 
 ---

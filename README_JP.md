@@ -21,7 +21,8 @@
 | データ元 | `ロ또7.xlsx` → `assets/draws.json` |
 | デフォルト言語 | 日本語 |
 | 対応言語 | 日本語 / 한국어 / English |
-| APKダウンロード | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk)（リリース版） |
+| APKダウンロード | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk)（署名付きリリース版） |
+| ビルド | リリース `assembleRelease` / デバッグ `assembleDebug` |
 
 ---
 
@@ -66,10 +67,19 @@ TopBar の下に **LOTO 7 バナー** が常に表示されます。
 
 ### 3.2 当選数字
 
-発表された当選本数字を登録・修正・削除する画面です。  
+発表された当選本数字を登録・修正・削除し、**最新抽選データを自動更新**する画面です。  
 登録データは **ロト番号** メニューの生成アルゴリズムに自動反映されます。
 
-**主な機能**
+**自動更新（v1.4）**
+
+- **アプリ起動時** — 内蔵 `draws.json`（680回）と公式サイトの最新回を当選数字DBへ自動登録
+- **当選数字タブ表示時** — 未登録分を再確認・更新
+- **回別降順** 表示（第680回 → 第679回 …）、上部に **合計 N回** を表示
+- 更新中は上部に **進捗バー** を表示
+
+> 設定の **本数字自動登録** を押さなくても、この画面に最新データが表示されます。
+
+**手動入力**
 
 - **追加 (+)** — 回別、抽せん日、本数字7個を入力
 - **修正 / 削除** — 確認後に削除
@@ -255,8 +265,9 @@ LottoNumber/
 ├── ロ또7.xlsx             # 原データ
 ├── lotto7_generator.py    # Python CLI
 ├── docs/images/           # 画面キャプチャ (en/, ko/, ja/)
-├── releases/              # APK
+├── releases/              # APK（loto-number-v1.4.apk 等）
 └── android/               # Android ソース
+    └── keystore.properties.example  # リリース署名設定例
 ```
 
 ---

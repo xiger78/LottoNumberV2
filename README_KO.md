@@ -21,7 +21,8 @@
 | 데이터 출처 | `ロ또7.xlsx` → `assets/draws.json` |
 | 기본 표시 언어 | 일본어 (日本語) |
 | 지원 언어 | 日本語 / 한국어 / English |
-| APK 다운로드 | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk) (정식) |
+| APK 다운로드 | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk) (정식·서명) |
+| 빌드 | 정식 `assembleRelease` / 디버그 `assembleDebug` |
 
 ---
 
@@ -66,10 +67,19 @@ TopBar 아래에 **LOTO 7 배너**가 항상 표시됩니다.
 
 ### 3.2 当選数字 (당첨숫자)
 
-발표된 당첨 본숫자를 직접 등록·수정·삭제하는 화면입니다.  
+발표된 당첨 본숫자를 등록·수정·삭제하고, **최신 추첨 데이터를 자동으로 갱신**하는 화면입니다.  
 등록된 번호는 **ロト番号** 메뉴의 생성 알고리즘에 자동 반영됩니다.
 
-**주요 기능**
+**자동 갱신 (v1.4)**
+
+- **앱 시작 시** — 내장 `draws.json`(680회)과 공식 사이트 최신 회차를 당첨숫자 DB에 자동 등록
+- **당첨숫자 탭 진입 시** — 미등록 회차를 다시 확인·갱신
+- **회차 내림차순** 표시 (第680回 → 第679回 …), 상단 **총 N회** 표시
+- 갱신 중 상단 **진행 표시줄** 표시
+
+> 설정의 **본숫자 자동등록**을 누르지 않아도 위 화면에서 최신 데이터가 표시됩니다.
+
+**수동 입력**
 
 - **추가 (+)** — 회차, 추첨일, 본숫자 7개 입력
 - **수정 / 삭제** — 확인 후 삭제
@@ -255,8 +265,9 @@ LottoNumber/
 ├── 로또7.xlsx             # 원본 추첨 데이터
 ├── lotto7_generator.py    # Python CLI 생성기
 ├── docs/images/           # 화면 캡처 (en/, ko/, ja/)
-├── releases/              # APK 파일
-└── android/               # Android 앱 소스
+├── releases/              # APK (loto-number-v1.4.apk 등)
+├── android/               # Android 앱 소스
+│   └── keystore.properties.example  # 정식 빌드 서명 설정 예시
 ```
 
 ---
