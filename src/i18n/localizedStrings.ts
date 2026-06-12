@@ -1,0 +1,308 @@
+export type AppLanguage = 'ja' | 'ko' | 'en';
+
+export interface Strings {
+  appName: string;
+  navLotto: string;
+  navWinning: string;
+  navLookup: string;
+  navHistory: string;
+  navSettings: string;
+  patternAnalysis: string;
+  analysisDraws: string;
+  latestRound: string;
+  latestWinning: string;
+  hotNumbers: string;
+  coldNumbers: string;
+  sumAverage: string;
+  oddDistribution: string;
+  monthPattern: string;
+  generateButton: string;
+  recommendedCombos: string;
+  disclaimer: string;
+  winningConsidered: string;
+  openOfficialSite: string;
+  winningTitle: string;
+  addWinning: string;
+  editWinning: string;
+  deleteWinning: string;
+  roundLabel: string;
+  drawDateLabel: string;
+  numbersLabel: string;
+  save: string;
+  cancel: string;
+  delete: string;
+  confirmDelete: string;
+  invalidNumbers: string;
+  emptyWinning: string;
+  historyTitle: string;
+  historyEmpty: string;
+  prevPage: string;
+  nextPage: string;
+  pageInfo: string;
+  settingsTitle: string;
+  languageLabel: string;
+  loadError: string;
+  times: string;
+  sumLabel: string;
+  oddLabel: string;
+  kouLabel: string;
+  monthSuffix: string;
+  lookupTitle: string;
+  lookupSearchHint: string;
+  lookupEmpty: string;
+  lookupTotal: string;
+  autoRegisterExcel: string;
+  autoRegisterExcelDesc: string;
+  fetchOfficial: string;
+  fetchOfficialDesc: string;
+  importing: string;
+  importSuccess: string;
+  importFailed: string;
+  importNone: string;
+  importAlreadyUpToDate: string;
+  dataNotReady: string;
+  importingEmbedded: string;
+  importingOfficial: string;
+  monthLabel: (month: number) => string;
+}
+
+const ja: Strings = {
+  appName: 'ロト番号',
+  navLotto: 'ロト番号',
+  navWinning: '当選数字',
+  navLookup: '当選照会',
+  navHistory: '生成履歴',
+  navSettings: '設定',
+  patternAnalysis: 'パターン分析結果',
+  analysisDraws: '分析回数',
+  latestRound: '最新回',
+  latestWinning: '最近当選',
+  hotNumbers: '出現多い番号',
+  coldNumbers: '出現少ない番号',
+  sumAverage: '合計平均',
+  oddDistribution: '奇数分布 TOP',
+  monthPattern: '抽選月パターン',
+  generateButton: '番号10組生成',
+  recommendedCombos: 'おすすめ本数字',
+  disclaimer: '※ 過去パターン参考用。当選を保証しません。',
+  winningConsidered: '※ 登録済み当選数字も分析に反映されます。',
+  openOfficialSite: '公式当選発表サイト',
+  winningTitle: '当選数字管理',
+  addWinning: '当選数字追加',
+  editWinning: '当選数字編集',
+  deleteWinning: '削除',
+  roundLabel: '回別',
+  drawDateLabel: '抽せん日',
+  numbersLabel: '本数字 (7個, 1-37)',
+  save: '保存',
+  cancel: 'キャンセル',
+  delete: '削除',
+  confirmDelete: 'この当選数字を削除しますか？',
+  invalidNumbers: '本数字7個 (1-37) を正しく入力してください。',
+  emptyWinning: '登録された当選数字がありません。',
+  historyTitle: '生成履歴',
+  historyEmpty: '生成履歴がありません。',
+  prevPage: '前へ',
+  nextPage: '次へ',
+  pageInfo: 'ページ %d / %d',
+  settingsTitle: '設定',
+  languageLabel: '表示言語',
+  loadError: 'データ読込失敗',
+  times: '回',
+  sumLabel: '合',
+  oddLabel: '奇',
+  kouLabel: '口',
+  monthSuffix: '月',
+  lookupTitle: '過去当選番号照会',
+  lookupSearchHint: '回別・日付で検索',
+  lookupEmpty: '該当する当選番号がありません。',
+  lookupTotal: '全 %d 回',
+  autoRegisterExcel: '本数字自動登録',
+  autoRegisterExcelDesc: '内蔵データの未登録分と676回以降の最新抽選を当選数字に登録',
+  fetchOfficial: '公式サイトから取得',
+  fetchOfficialDesc: 'みずほ銀行当選発表ページから最新番号を取得・登録',
+  importing: '取得中...',
+  importSuccess: '登録 %d件 / スキップ %d件',
+  importFailed: '取得に失敗しました。ネットワークを確認してください。',
+  importNone: '新規登録するデータがありません。',
+  importAlreadyUpToDate: '未登録データなし（%d件は登録済み）',
+  dataNotReady: '抽選データの読み込み中です。しばらくしてから再度お試しください。',
+  importingEmbedded: '内蔵データを登録中...',
+  importingOfficial: '公式サイトの最新回を確認中...',
+  monthLabel: (month) => `${month}月`,
+};
+
+const ko: Strings = {
+  appName: '로또번호',
+  navLotto: '로또번호',
+  navWinning: '당첨숫자',
+  navLookup: '당첨조회',
+  navHistory: '생성이력',
+  navSettings: '설정',
+  patternAnalysis: '패턴 분석 결과',
+  analysisDraws: '분석 회차',
+  latestRound: '최신 회차',
+  latestWinning: '최근 당첨',
+  hotNumbers: '자주 나온 번호',
+  coldNumbers: '적게 나온 번호',
+  sumAverage: '합계 평균',
+  oddDistribution: '홀수 분포 TOP',
+  monthPattern: '추첨 월 패턴',
+  generateButton: '번호 10조합 생성',
+  recommendedCombos: '추천 본숫자',
+  disclaimer: '※ 과거 패턴 기반 참고용이며 당첨을 보장하지 않습니다.',
+  winningConsidered: '※ 저장된 당첨숫자도 분석에 반영됩니다.',
+  openOfficialSite: '공식 당첨 발표 사이트',
+  winningTitle: '당첨숫자 관리',
+  addWinning: '당첨숫자 추가',
+  editWinning: '당첨숫자 수정',
+  deleteWinning: '삭제',
+  roundLabel: '회차',
+  drawDateLabel: '추첨일',
+  numbersLabel: '본숫자 (7개, 1-37)',
+  save: '저장',
+  cancel: '취소',
+  delete: '삭제',
+  confirmDelete: '이 당첨숫자를 삭제하시겠습니까?',
+  invalidNumbers: '본숫자 7개(1-37)를 올바르게 입력하세요.',
+  emptyWinning: '등록된 당첨숫자가 없습니다.',
+  historyTitle: '생성이력',
+  historyEmpty: '생성 이력이 없습니다.',
+  prevPage: '이전',
+  nextPage: '다음',
+  pageInfo: '페이지 %d / %d',
+  settingsTitle: '설정',
+  languageLabel: '표시 언어',
+  loadError: '데이터 로드 실패',
+  times: '회',
+  sumLabel: '합',
+  oddLabel: '홀',
+  kouLabel: '口',
+  monthSuffix: '月',
+  lookupTitle: '과거 당첨번호 조회',
+  lookupSearchHint: '회차·날짜 검색',
+  lookupEmpty: '해당하는 당첨번호가 없습니다.',
+  lookupTotal: '총 %d회',
+  autoRegisterExcel: '본숫자 자동등록',
+  autoRegisterExcelDesc: '내장 데이터 미등록분과 676회 이후 최신 추첨을 당첨숫자에 등록',
+  fetchOfficial: '공식 사이트에서 가져오기',
+  fetchOfficialDesc: 'みずほ銀行 당첨 발표 페이지에서 최신 번호를 가져와 등록',
+  importing: '가져오는 중...',
+  importSuccess: '등록 %d건 / 건너뜀 %d건',
+  importFailed: '가져오기 실패. 네트워크를 확인하세요.',
+  importNone: '새로 등록할 데이터가 없습니다.',
+  importAlreadyUpToDate: '새로 등록할 데이터 없음 (%d건 이미 등록됨)',
+  dataNotReady: '추첨 데이터를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.',
+  importingEmbedded: '내장 데이터 등록 중...',
+  importingOfficial: '공식 사이트 최신 회차 확인 중...',
+  monthLabel: (month) => `${month}月`,
+};
+
+const en: Strings = {
+  appName: 'Loto Number',
+  navLotto: 'Loto No.',
+  navWinning: 'Winning No.',
+  navLookup: 'Lookup',
+  navHistory: 'History',
+  navSettings: 'Settings',
+  patternAnalysis: 'Pattern Analysis',
+  analysisDraws: 'Draws analyzed',
+  latestRound: 'Latest round',
+  latestWinning: 'Recent winning',
+  hotNumbers: 'Hot numbers',
+  coldNumbers: 'Cold numbers',
+  sumAverage: 'Sum average',
+  oddDistribution: 'Odd count TOP',
+  monthPattern: 'Draw month pattern',
+  generateButton: 'Generate 10 sets',
+  recommendedCombos: 'Recommended numbers',
+  disclaimer: '※ Based on past patterns. No guarantee of winning.',
+  winningConsidered: '※ Saved winning numbers are included in analysis.',
+  openOfficialSite: 'Official results site',
+  winningTitle: 'Winning Numbers',
+  addWinning: 'Add winning numbers',
+  editWinning: 'Edit winning numbers',
+  deleteWinning: 'Delete',
+  roundLabel: 'Round',
+  drawDateLabel: 'Draw date',
+  numbersLabel: 'Main numbers (7, 1-37)',
+  save: 'Save',
+  cancel: 'Cancel',
+  delete: 'Delete',
+  confirmDelete: 'Delete this winning entry?',
+  invalidNumbers: 'Enter exactly 7 numbers (1-37).',
+  emptyWinning: 'No winning numbers registered.',
+  historyTitle: 'Generation History',
+  historyEmpty: 'No generation history.',
+  prevPage: 'Prev',
+  nextPage: 'Next',
+  pageInfo: 'Page %d / %d',
+  settingsTitle: 'Settings',
+  languageLabel: 'Display language',
+  loadError: 'Failed to load data',
+  times: '',
+  sumLabel: 'Sum',
+  oddLabel: 'Odd',
+  kouLabel: 'Kou',
+  monthSuffix: 'M',
+  lookupTitle: 'Past Winning Lookup',
+  lookupSearchHint: 'Search round or date',
+  lookupEmpty: 'No matching winning numbers.',
+  lookupTotal: 'Total %d draws',
+  autoRegisterExcel: 'Auto-register main numbers',
+  autoRegisterExcelDesc: 'Register missing embedded draws and latest results after round 676',
+  fetchOfficial: 'Fetch from official site',
+  fetchOfficialDesc: 'Fetch latest numbers from Mizuho Bank results page',
+  importing: 'Importing...',
+  importSuccess: 'Added %d / Skipped %d',
+  importFailed: 'Fetch failed. Check your network.',
+  importNone: 'No new data to register.',
+  importAlreadyUpToDate: 'Nothing new to register (%d already registered)',
+  dataNotReady: 'Draw data is still loading. Please try again shortly.',
+  importingEmbedded: 'Registering embedded draws...',
+  importingOfficial: 'Checking official site for latest draws...',
+  monthLabel: (month) => `${month}M`,
+};
+
+export function getStrings(language: AppLanguage): Strings {
+  switch (language) {
+    case 'ko':
+      return ko;
+    case 'en':
+      return en;
+    default:
+      return ja;
+  }
+}
+
+export const LANGUAGE_OPTIONS: { code: AppLanguage; label: string }[] = [
+  { code: 'ja', label: '日本語' },
+  { code: 'ko', label: '한국어' },
+  { code: 'en', label: 'English' },
+];
+
+export function formatHistoryLine(language: AppLanguage, createdAt: number, numbers: number[]): string {
+  const d = new Date(createdAt);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  const nums = numbers.map((n) => String(n).padStart(2, '0')).join(' ');
+  switch (language) {
+    case 'ja':
+      return `${y}年${m}月${day}日${h}時${min}分:${nums}`;
+    case 'ko':
+      return `${y}년${m}월${day}일${h}시${min}분:${nums}`;
+    default:
+      return `${y}/${m}/${day} ${h}:${min}:${nums}`;
+  }
+}
+
+export function formatPageInfo(template: string, current: number, total: number): string {
+  return template.replace('%d', String(current)).replace('%d', String(total));
+}
+
+export function formatLookupTotal(template: string, count: number): string {
+  return template.replace('%d', String(count));
+}

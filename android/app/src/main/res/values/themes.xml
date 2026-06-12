@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.Lotto7Generator" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/lotto_primary_dark</item>
-        <item name="android:navigationBarColor">@color/white</item>
-    </style>
-</resources>

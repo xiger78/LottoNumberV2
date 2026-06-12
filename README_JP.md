@@ -2,7 +2,7 @@
 
 > **マニュアル:** [English](README.md) · [한국어](README_KO.md) · [日本語](README_JP.md)
 
-日本 **ロト7 (Loto7)** 本数字パターン分析・自動生成 — Androidアプリおよび Python CLI の使用・開発マニュアル
+日本 **ロト7 (Loto7)** 本数字パターン分析・自動生成 — React Native アプリの使用・開発マニュアル
 
 > **アプリ名:** ロト番号  
 > **バージョン:** 1.4  
@@ -13,16 +13,15 @@
 
 ## 1. アプリ概要
 
-**ロト番号**は、ロト7の過去本数字 **680回** のデータを分析し、統計パターンに基づいて番号10組を自動生成する Android アプリです。
+**ロト番号**は、ロト7の過去本数字 **680回** のデータを分析し、統計パターンに基づいて番号10組を自動生成する React Native アプリです。
 
 | 項目 | 内容 |
 |------|------|
 | 対象くじ | 日本ロト7（1〜37から7個選択） |
-| データ元 | `ロ또7.xlsx` → `assets/draws.json` |
+| データ元 | `assets/draws.json`（680回内蔵） |
 | デフォルト言語 | 日本語 |
 | 対応言語 | 日本語 / 한국어 / English |
-| APKダウンロード | [releases/loto-number-v1.4.apk](releases/loto-number-v1.4.apk)（署名付きリリース版） |
-| ビルド | リリース `assembleRelease` / デバッグ `assembleDebug` |
+| プラットフォーム | React Native (Expo) — iOS & Android |
 
 ---
 
@@ -175,99 +174,57 @@ TopBar の下に **LOTO 7 バナー** が常に表示されます。
 
 ---
 
-## 5. Python CLI
+## 5. 開発環境
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python lotto7_generator.py
-```
-
-エクセル → Android JSON 変換:
-
-```bash
-python android/export_draws.py
-```
-
----
-
-## 6. 開発環境
-
-### 6.1 必要ツール
+### 5.1 必要ツール
 
 | ツール | バージョン |
 |--------|-----------|
-| **OS** | macOS / Windows / Linux |
-| **JDK** | OpenJDK **17** 以上 |
-| **Android Studio** | Hedgehog (2023.1.1) 以上推奨 |
-| **Android SDK** | API **34** |
-| **Gradle** | 8.2 |
-| **Kotlin** | 1.9.22 |
-| **Python** | 3.7+ |
+| **Node.js** | 18+ |
+| **Expo** | `npx expo` |
+| **iOS** | Xcode（macOS） |
+| **Android** | Android Studio / SDK |
 
-### 6.2 ビルド
-
-**リリースビルド（推奨）**
+### 5.2 実行
 
 ```bash
-export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
-cd android
-cp keystore.properties.example keystore.properties   # キーストアパス・パスワードを設定
-./gradlew assembleRelease
+npm install
+npx expo start
 ```
 
-**APK出力:** `android/app/build/outputs/apk/release/app-release.apk`  
-配布用: `releases/loto-number-v1.4.apk`
+`a` — Android エミュレータ、`i` — iOS シミュレータ、QR — Expo Go
 
-**デバッグビルド**
+### 5.3 ビルド
 
 ```bash
-export JAVA_HOME="/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
-cd android
-./gradlew assembleDebug
+npm install -g eas-cli
+eas build --platform android
+eas build --platform ios
 ```
-
-**APK出力:** `android/app/build/outputs/apk/debug/app-debug.apk`
 
 ---
 
-## 7. 技術スタック・ライブラリ
+## 6. 技術スタック
 
-### Android アプリ
-
-| 分類 | 技術 / ライブラリ | バージョン |
-|------|-------------------|-----------|
-| 言語 | **Kotlin** | 1.9.22 |
-| UI | **Jetpack Compose** + Material3 | BOM 2024.02.00 |
-| アーキテクチャ | ViewModel + StateFlow | lifecycle 2.7.0 |
-| DB | **Room** | 2.6.1 |
-| 設定保存 | **DataStore Preferences** | 1.0.0 |
-| 非同期 | **Kotlin Coroutines** | 1.7.3 |
-| ナビゲーション | Navigation Compose | 2.7.7 |
-| ビルド | AGP | 8.2.2 |
-| コード生成 | KSP | 1.9.22-1.0.17 |
-
-### Python CLI
-
-| ライブラリ | 用途 |
-|-----------|------|
-| pandas | エクセル読込 |
-| openpyxl | .xlsx 解析 |
+| 分類 | 技術 |
+|------|------|
+| フレームワーク | React Native + Expo |
+| 言語 | TypeScript |
+| ナビゲーション | React Navigation |
+| ストレージ | AsyncStorage |
+| データ | `assets/draws.json` |
 
 ### プロジェクト構成
 
 ```
 LottoNumber/
-├── README.md              # 英語マニュアル
-├── README_KO.md           # 韓国語マニュアル
-├── README_JP.md           # 日本語マニュアル（本書）
-├── ロ또7.xlsx             # 原データ
-├── lotto7_generator.py    # Python CLI
-├── docs/images/           # 画面キャプチャ (en/, ko/, ja/)
-├── releases/              # APK（loto-number-v1.4.apk 等）
-└── android/               # Android ソース
-    └── keystore.properties.example  # リリース署名設定例
+├── App.tsx
+├── assets/draws.json
+├── src/engine/          # パターン分析・番号生成
+├── src/data/            # ストレージ・公式サイト fetch
+├── src/screens/         # 5タブ画面
+├── src/i18n/            # 3言語
+└── docs/images/
 ```
 
 ---

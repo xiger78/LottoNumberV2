@@ -1,0 +1,15 @@
+export const colors = {
+  lottoPrimary: '#1565C0',
+  lottoPrimaryDark: '#0D47A1',
+  lottoSecondary: '#FF8F00',
+  lottoBackground: '#F5F7FA',
+  lottoSurface: '#FFFFFF',
+  ballColor: '#1976D2',
+  ballText: '#FFFFFF',
+  error: '#B00020',
+  onSurfaceVariant: '#666666',
+  primaryContainer: '#E3F2FD',
+  errorContainer: '#FFEBEE',
+  onErrorContainer: '#B00020',
+  onPrimaryContainer: '#0D47A1',
+};
