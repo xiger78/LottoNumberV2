@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, useNavigationState } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { LottoBanner } from './src/components/LottoBanner';
@@ -30,20 +30,13 @@ function TabIcon({ label, focused }: { label: string; focused: boolean }) {
 
 function MainTabs() {
   const { strings, refreshWinningNumbers, loadHistoryPage, loadLookupPage } = useApp();
-  const routeName = useNavigationState((state) => state?.routes[state.index]?.name ?? 'Lotto');
-  const titleMap: Record<string, string> = {
-    Lotto: strings.navLotto,
-    Winning: strings.navWinning,
-    Lookup: strings.navLookup,
-    History: strings.navHistory,
-    Settings: strings.navSettings,
-  };
+  const [headerTitle, setHeaderTitle] = useState(strings.navLotto);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{titleMap[routeName] ?? strings.appName}</Text>
+        <Text style={styles.headerTitle}>{headerTitle}</Text>
       </View>
       <LottoBanner />
       <Tab.Navigator
@@ -59,29 +52,40 @@ function MainTabs() {
           name="Lotto"
           component={LottoScreen}
           options={{ title: strings.navLotto }}
+          listeners={{ focus: () => setHeaderTitle(strings.navLotto) }}
         />
         <Tab.Screen
           name="Winning"
           component={WinningScreen}
           options={{ title: strings.navWinning }}
-          listeners={{ tabPress: () => refreshWinningNumbers() }}
+          listeners={{
+            focus: () => setHeaderTitle(strings.navWinning),
+            tabPress: () => refreshWinningNumbers(),
+          }}
         />
         <Tab.Screen
           name="Lookup"
           component={LookupScreen}
           options={{ title: strings.navLookup }}
-          listeners={{ tabPress: () => loadLookupPage(0) }}
+          listeners={{
+            focus: () => setHeaderTitle(strings.navLookup),
+            tabPress: () => loadLookupPage(0),
+          }}
         />
         <Tab.Screen
           name="History"
           component={HistoryScreen}
           options={{ title: strings.navHistory }}
-          listeners={{ tabPress: () => loadHistoryPage(0) }}
+          listeners={{
+            focus: () => setHeaderTitle(strings.navHistory),
+            tabPress: () => loadHistoryPage(0),
+          }}
         />
         <Tab.Screen
           name="Settings"
           component={SettingsScreen}
           options={{ title: strings.navSettings }}
+          listeners={{ focus: () => setHeaderTitle(strings.navSettings) }}
         />
       </Tab.Navigator>
     </SafeAreaView>

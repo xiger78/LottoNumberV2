@@ -92,7 +92,7 @@ android {
         applicationId 'com.lotto7.generator'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 7
         versionName "1.4.0"
     }
     signingConfigs {
